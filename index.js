@@ -79,7 +79,6 @@ app.post("/api/v1/books", async (req, res) => {
       description,
     });
     const data = await book.save();
-    deleteKeys('Book')
     return res.status(200).json({
       msg: "Ok",
       data,
@@ -106,7 +105,6 @@ app.put("/api/v1/books/:id", async (req, res) => {
       },
       { new: true }
     );
-    deleteKeys('Book')
     return res.status(200).json({
       msg: "Ok",
       data,
@@ -121,7 +119,6 @@ app.put("/api/v1/books/:id", async (req, res) => {
 app.delete("/api/v1/books/:id", async (req, res) => {
   try {
     await BookModel.findByIdAndDelete(req.params.id);
-    deleteKeys('Book')
     return res.status(200).json({
       msg: "Ok",
     });
