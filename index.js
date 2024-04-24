@@ -11,15 +11,6 @@ const connectDB = require("./connectMongo");
 connectDB();
 
 const BookModel = require("./models/book.model");
-const redis = require('./redis')
-
-const deleteKeys = async (pattern) => {
-  const keys = await redis.keys(`${pattern}::*`)
-  console.log(keys)
-  if (keys.length > 0) {
-    redis.del(keys)
-  }
-}
 
 app.get("/api/v1/books", async (req, res) => {
   const { limit = 5, orderBy = "name", sortBy = "asc", keyword } = req.query;
@@ -33,31 +24,22 @@ app.get("/api/v1/books", async (req, res) => {
 
   if (keyword) query.name = { $regex: keyword, $options: "i" };
 
-  const key = `Book::${JSON.stringify({query, page, limit, orderBy, sortBy})}`
   let response = null
   try {
-    const cache = await redis.get(key)
-    if (cache) {
-      response = JSON.parse(cache)
-    } else {
-      const data = await BookModel.find(query)
+    const data = await BookModel.find(query)
       .skip(skip)
       .limit(limit)
       .sort({ [orderBy]: sortBy });
-      const totalItems = await BookModel.countDocuments(query);
+    const totalItems = await BookModel.countDocuments(query);
 
-      response = {
-        msg: "Ok",
-        data,
-        totalItems,
-        totalPages: Math.ceil(totalItems / limit),
-        limit: +limit,
-        currentPage: page,
-      }
-
-      redis.setex(key, 600, JSON.stringify(response))
+    response = {
+      msg: "Ok",
+      data,
+      totalItems,
+      totalPages: Math.ceil(totalItems / limit),
+      limit: +limit,
+      currentPage: page,
     }
-    
     return res.status(200).json(response);
   } catch (error) {
     return res.status(500).json({
