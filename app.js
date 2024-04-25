@@ -5,7 +5,7 @@ require("dotenv").config();
 var app = express();
 app.use(bodyParser.json({limit: '10mb', extended: true}))
 app.use(bodyParser.urlencoded({limit: '10mb', extended: true}))
-app.use(express.static(__dirname+'/public'));
+app.use(express.json());
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -30,4 +30,3 @@ const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log("Server is running on port " + PORT);
 });
-module.exports = app;
