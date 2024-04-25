@@ -1,7 +1,7 @@
 require("dotenv").config();
 const connectDB = require("../connectMongo");
 connectDB();
-const RoomModel = require("../Models/room.model");
+const RoomModel = require("../ModelsFolder/room.model");
 
 exports.getAll = async (params) => {
     const { limit, orderBy, sortBy, keyword, skip, page } = params;

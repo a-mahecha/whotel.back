@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const connectDB = require("../connectMongo");
 connectDB();
-const UserModel = require("../Models/user.model");
+const UserModel = require("../ModelsFolder/user.model");
 
 
 exports.login = async (params) => {
