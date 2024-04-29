@@ -8,7 +8,7 @@ const UserModel = require("../ModelsFolder/user.model");
 
 exports.login = async (params) => {
     const { userName, password } = params;
-    const user = await UserModel.findOne({ userName });
+    const user = await UserModel.findOne({ userName: { $regex: new RegExp(userName, "i") } });;
     if (user) {
         const isPasswordMatch = bcrypt.compareSync(password, user.password);
         if (isPasswordMatch) {
@@ -26,7 +26,11 @@ exports.login = async (params) => {
             return {
                 msg: "Ok",
                 data: {
-                    user,
+                    user:{
+                        name: user.name,
+                        name: user.lastLogin,
+                        name: user.userName,
+                    },
                     token,
                 },
             };
